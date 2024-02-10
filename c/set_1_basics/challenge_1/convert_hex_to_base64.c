@@ -1,5 +1,5 @@
-#include "base64.h"
-#include "hex.h"
+#include "../../src/base64.h"
+#include "../../src/hex.h"
 #include <stdio.h>
 #include <string.h>
 
