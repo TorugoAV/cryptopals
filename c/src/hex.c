@@ -9,7 +9,7 @@ char* hex_decode(char* hex)
   char* decoded_text = malloc((len/2) * sizeof(char));
   
   // ITERATE THROUGH THE ENCODED STRING IN PAIRS
-  for(int i = 0; i < len; i += 2){
+  for(int i = 0, j = 0; i < len; i += 2){
     // IF THE FIRST CHAR IS IN RANGE 0-9
     // GET THE DIFFERENCE BETWEEN THE CHAR AND 48 
     // (0 = 48, 9 = 57) THIS MAKE SURES THE STRING "0" EQUAL TO THE REAL ZERO)
@@ -36,12 +36,15 @@ char* hex_decode(char* hex)
     // GET THE DIFFERENCE BETWEEN THE CHAR AND 87
     // (97 = a, z = 122)  I WANT a TO BE EQUAL TO 10 (a=10,b=11,...,f=15)
     // ADD THE DECIMAL VALUE AT THE END
-   } else {
+    } else {
       decoded_byte += (hex[i+1] - 87);
     }
 
-    // CONCATENATE THE FOUND ORIGINAL BYTE AND ZERO THE VARIABLE FOR THE LOOP
-    strncat(decoded_text, (char*)&decoded_byte, 1);
+    // CONCATENATE THE FOUND ORIGINAL BYTE
+    decoded_text[j] = decoded_byte;
+    j++;
+
+    // RESET VARIABLE FOR THE LOOP
     decoded_byte = 0;
   }
   return decoded_text;
@@ -51,12 +54,12 @@ char* hex_decode(char* hex)
 char* hex_encode(char* pt)
 {
   int len = strlen(pt);
-  char encoded_byte[2];
+  char encoded_byte[3] = {};
   char* encoded_text = malloc((len * 2) * sizeof(char));
 
   // ITERATE THROUGH THE PLAINTEXT
   // 1 PLAINTEXT CHAR EQUALS 2 HEX ENCODED CHARS "A" = "41"
-  for(int i = 0; i < len; i++){
+  for(int i = 0, j = 0; i < len; i++){
     // DIVIDE THE DECIMAL VALUE OF CHAR BY 16 AND CHECK IF IS IN RANGE 0-9
     // GET THE RESULT OF DIVISION AND ADD 48 (DECIMAL VALUE OF "0") TO GET THE ORIGINAL NUMBER 
     // ASSIGN VALUE TO CHAR TO CONCATENATE LATER
@@ -80,9 +83,13 @@ char* hex_encode(char* pt)
     } else{
       encoded_byte[1] = (pt[i] % 16) + 87;
     }
-
-    strncat(encoded_text, encoded_byte, 2);
+    
+    // CONCATENATE ENCODED BYTES TO CHARARRAY
+    encoded_text[j] = encoded_byte[0];
+    encoded_text[j+1] = encoded_byte[1];
+    j += 2;
 
   }
+  encoded_text[len * 2] = '\0';
   return encoded_text;
 }
